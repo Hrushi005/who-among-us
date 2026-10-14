@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Room - Who Among Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --theme-primary: #6366f1;
+            --theme-secondary: #8b5cf6;
+            --theme-glow: rgba(99, 102, 241, 0.45);
+            --theme-soft: #eef2ff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fb;
+            color: #1e293b;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Soft Background Blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(85px);
+            z-index: -1;
+            opacity: 0.55;
+            transition: background 0.5s ease;
+            animation: moveBlob 9s infinite ease-in-out alternate;
+        }
+        .blob1 { width: 380px; height: 380px; background: var(--theme-primary); top: -90px; left: -90px; opacity: 0.25; }
+        .blob2 { width: 420px; height: 420px; background: var(--theme-secondary); bottom: -100px; right: -70px; opacity: 0.25; animation-delay: 2s; }
+
+        @keyframes moveBlob {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-22px) scale(1.06); }
+        }
+
+        /* Top Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 8%;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1a202c;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-right {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Center Content Area (Exact like image_409db1.png) */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px 60px 20px;
+            text-align: center;
+        }
+
+        .join-box {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Character Wrapper with Sparkles & Soft Aura */
+        .character-stage {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .character-aura {
+            position: absolute;
+            width: 165px;
+            height: 165px;
+            border-radius: 50%;
+            background: var(--theme-soft);
+            z-index: 1;
+            transition: background 0.4s ease;
+        }
+
+        .character-img {
+            width: 145px;
+            height: auto;
+            z-index: 2;
+            animation: floatChar 3.2s infinite ease-in-out;
+            filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.12));
+            transition: transform 0.25s ease;
+        }
+
+        .character-stage:hover .character-img {
+            transform: scale(1.06);
+        }
+
+        @keyframes floatChar {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        /* Floating Sparkles Around Character */
+        .sparkle {
+            position: absolute;
+            z-index: 3;
+            font-size: 18px;
+            animation: twinkle 2.4s infinite ease-in-out alternate;
+            user-select: none;
+        }
+        .sp-1 { top: 22px; left: 10px; color: #facc15; animation-delay: 0.2s; }
+        .sp-2 { top: 30px; right: 12px; color: var(--theme-primary); font-size: 20px; animation-delay: 0.8s; }
+        .sp-3 { bottom: 38px; left: -5px; color: #a855f7; font-size: 14px; animation-delay: 1.2s; }
+        .sp-4 { bottom: 30px; right: 0px; color: #facc15; font-size: 17px; animation-delay: 0.5s; }
+
+        @keyframes twinkle {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 0.6; }
+            100% { transform: scale(1.2) rotate(18deg); opacity: 1; }
+        }
+
+        .tap-hint {
+            font-size: 12px;
+            font-weight: 800;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #64748b;
+            margin: 0 0 28px 0;
+        }
+
+        /* Form Input & Animated Button */
+        form {
+            width: 100%;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 17px 20px 17px 50px;
+            border-radius: 18px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #1e293b;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .name-input::placeholder {
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .name-input:focus {
+            border-color: var(--theme-primary);
+            box-shadow: 0 0 0 4px var(--theme-glow);
+            transform: translateY(-1px);
+        }
+
+        /* Dynamic Color Animated Join Button */
+        .btn-join {
+            width: 100%;
+            padding: 17px;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 19px;
+            font-weight: 900;
+            color: white;
+            background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+            cursor: pointer;
+            box-shadow: 0 10px 25px var(--theme-glow);
+            transition: all 0.3s ease;
+            animation: pulseDynamic 2.4s infinite;
+        }
+
+        .btn-join:hover {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.05);
+        }
+
+        @keyframes pulseDynamic {
+            0% { box-shadow: 0 10px 25px var(--theme-glow), 0 0 0 0 var(--theme-glow); }
+            70% { box-shadow: 0 10px 25px var(--theme-glow), 0 0 0 14px rgba(0, 0, 0, 0); }
+            100% { box-shadow: 0 10px 25px var(--theme-glow), 0 0 0 0 rgba(0, 0, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <a href="/" class="logo">🕵️ Who Among Us</a>
+        <div class="nav-right">🌙</div>
+    </div>
+
+    <!-- Main Center Section -->
+    <div class="main-container">
+        <div class="join-box">
+
+            <!-- Character Image (Click to switch character color!) -->
+            <div class="character-stage" onclick="cycleCharacter()" title="Tap to change character!">
+                <div class="character-aura"></div>
+                <span class="sparkle sp-1">✦</span>
+                <span class="sparkle sp-2">✧</span>
+                <span class="sparkle sp-3">✦</span>
+                <span class="sparkle sp-4">✦</span>
+                <img id="charImage" src="/images/<%= assignedColor %>.png" class="character-img" alt="Among Us Character">
+            </div>
+
+            <div class="tap-hint">👆 Tap character to switch color</div>
+
+            <h1>Enter Your Name</h1>
+            <p class="subtitle">This is how your friends will see you.</p>
+
+            <form action="/start-playing" method="POST">
+                <input type="hidden" name="roomCode" value="<%= roomCode %>">
+                <input type="hidden" name="avatar" id="avatarInput" value="<%= assignedColor %>">
+
+                <div class="input-wrapper">
+                    <span class="input-icon">😊</span>
+                    <input
+                        type="text"
+                        name="playerName"
+                        class="name-input"
+                        placeholder="Your name"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <button type="submit" class="btn-join" id="joinBtn">
+                    Join
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Exact 9 Character Colors saved in public/images/
+        const themes = {
+            red:       { primary: '#ef4444', secondary: '#dc2626', glow: 'rgba(239, 68, 68, 0.4)',  soft: '#fee2e2', text: '#ffffff' },
+            pink:      { primary: '#ec4899', secondary: '#db2777', glow: 'rgba(236, 72, 153, 0.4)', soft: '#fce7f3', text: '#ffffff' },
+            green:     { primary: '#10b981', secondary: '#059669', glow: 'rgba(16, 185, 129, 0.4)', soft: '#d1fae5', text: '#ffffff' },
+            yellow:    { primary: '#f59e0b', secondary: '#eab308', glow: 'rgba(245, 158, 11, 0.4)', soft: '#fef3c7', text: '#1e293b' },
+            black:     { primary: '#334155', secondary: '#0f172a', glow: 'rgba(51, 65, 85, 0.4)',   soft: '#e2e8f0', text: '#ffffff' },
+            purple:    { primary: '#8b5cf6', secondary: '#6366f1', glow: 'rgba(139, 92, 246, 0.4)', soft: '#ede9fe', text: '#ffffff' },
+            orange:    { primary: '#f97316', secondary: '#ea580c', glow: 'rgba(249, 115, 22, 0.4)', soft: '#ffedd5', text: '#ffffff' },
+            blue:      { primary: '#3b82f6', secondary: '#2563eb', glow: 'rgba(59, 130, 246, 0.4)', soft: '#dbeafe', text: '#ffffff' },
+            lite_blue: { primary: '#06b6d4', secondary: '#0891b2', glow: 'rgba(6, 182, 212, 0.4)',  soft: '#cffafe', text: '#ffffff' }
+        };
+
+        const colorKeys = Object.keys(themes);
+        let currentIndex = colorKeys.indexOf("<%= assignedColor %>");
+        if (currentIndex === -1) currentIndex = 0;
+
+        function applyTheme(colorName) {
+            const t = themes[colorName];
+            const root = document.documentElement;
+
+            root.style.setProperty('--theme-primary', t.primary);
+            root.style.setProperty('--theme-secondary', t.secondary);
+            root.style.setProperty('--theme-glow', t.glow);
+            root.style.setProperty('--theme-soft', t.soft);
+
+            document.getElementById('joinBtn').style.color = t.text;
+            document.getElementById('charImage').src = `/images/${colorName}.png`;
+            document.getElementById('avatarInput').value = colorName;
+        }
+
+        function cycleCharacter() {
+            currentIndex = (currentIndex + 1) % colorKeys.length;
+            applyTheme(colorKeys[currentIndex]);
+        }
+
+        // Apply initial assigned character theme on page load
+        applyTheme(colorKeys[currentIndex]);
+    </script>
+</body>
+</html>

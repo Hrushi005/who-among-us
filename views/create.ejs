@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room - Who Among Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f5ff; /* Cool Sky Blue-Grey Gaming BG */
+            color: #2d3748;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Cool Sky Blue, Mint & Lavender Background Blobs (Not Romantic!) */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.7;
+            animation: moveBlob 10s infinite ease-in-out alternate;
+        }
+        .blob1 { width: 420px; height: 420px; background: #93c5fd; top: -80px; left: -80px; }
+        .blob2 { width: 450px; height: 450px; background: #a7f3d0; bottom: -100px; right: -60px; animation-delay: 2s; }
+        .blob3 { width: 320px; height: 320px; background: #c4b5fd; top: 35%; left: 42%; opacity: 0.5; animation-delay: 4s; }
+
+        @keyframes moveBlob {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-25px) scale(1.08); }
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            z-index: 10;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: #ff758c; transform: translateX(-3px); }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-right { font-size: 20px; cursor: pointer; }
+
+        /* 4 Steps Tracker */
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 15px 10px;
+            max-width: 800px;
+            margin: 10px auto 30px auto;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .step.active {
+            color: #ff6b8b;
+            border-bottom: 3px solid #ff758c;
+            padding-bottom: 5px;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 2px solid #cbd5e1;
+            background: white;
+            color: #94a3b8;
+        }
+
+        .step.active .step-number {
+            background: linear-gradient(135deg, #ff9a9e, #ff758c);
+            border-color: #ff758c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 117, 140, 0.4);
+        }
+
+        /* Main Form Card */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0 20px 60px 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 45px 50px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 5;
+            border: 2px solid #e2e8f0;
+        }
+
+        /* Cool Gaming Top Badge & Title */
+        .top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e0f2fe;
+            color: #0284c7;
+            font-weight: 900;
+            font-size: 12.5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            border: 1px solid #bae6fd;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+        }
+
+        h2 .gradient-text {
+            background: linear-gradient(135deg, #ff758c 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-weight: 700;
+            font-size: 15px;
+            margin: 0 0 32px 0;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 800;
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        /* Default Input Style (Room Name) */
+        input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border-radius: 14px;
+            border: 2px solid #cbd5e1;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            color: #1e293b;
+            box-sizing: border-box;
+            transition: 0.3s ease;
+            background: #f8fafc;
+        }
+
+        /* Your Name Box: Cool Blue-Grey BG + Pink Typed Text */
+        input.name-pink-text {
+            background: #f1f5f9;
+            border: 2px solid #94a3b8;
+            color: #ec4899; /* Typed text is Vibrant Pink! */
+            font-weight: 900;
+        }
+
+        input.name-pink-text::placeholder {
+            color: #f472b6; /* "Noure" placeholder in Soft Pink */
+            font-weight: 700;
+            opacity: 0.85;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff758c;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 117, 140, 0.18);
+        }
+
+        /* Light Pink Animated Button */
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            margin-top: 10px;
+            border-radius: 16px;
+            font-size: 19px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff9a9e 0%, #ff758c 50%, #ff8da1 100%);
+            background-size: 200% auto;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 117, 140, 0.4);
+            animation: pulsePink 2.5s infinite;
+        }
+
+        .btn-submit:hover {
+            background-position: right center;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 117, 140, 0.6);
+        }
+
+        @keyframes pulsePink {
+            0% { box-shadow: 0 0 0 0 rgba(255, 117, 140, 0.55); }
+            70% { box-shadow: 0 0 0 16px rgba(255, 117, 140, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 117, 140, 0); }
+        }
+
+        /* Character Graphic on the Right */
+        .character-graphic {
+            position: absolute;
+            bottom: -30px;
+            right: -140px;
+            width: 185px;
+            z-index: 10;
+            pointer-events: none;
+            animation: floatChar 3.5s infinite ease-in-out;
+            filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.12));
+        }
+
+        @keyframes floatChar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        @media(max-width: 850px) {
+            .character-graphic {
+                position: relative;
+                bottom: 0;
+                right: 0;
+                margin: 25px auto -10px auto;
+                display: block;
+                width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+    <div class="bg-blob blob3"></div>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <a href="/" class="back-btn">← Back</a>
+        <div class="logo">🕵️ Who Among Us</div>
+        <div class="nav-right">🌙</div>
+    </div>
+
+    <!-- 4 Options Step Tracker -->
+    <div class="steps-container">
+        <div class="step active">
+            <div class="step-number">1</div>
+            <span>Create Room</span>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <span>Add Friends</span>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <span>Add Questions</span>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <span>Share Link</span>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="main-content">
+        <div class="card">
+            <div class="top-badge">🎮 SQUAD GAME SETUP</div>
+            <h2>Create <span class="gradient-text">Your Room</span> ⚡</h2>
+            <p class="subtitle">Enter your name and give your secret room a cool title to get started!</p>
+
+            <form action="/create-room" method="POST">
+                <!-- Your Name (Cool Box BG + Pink Typed Text + "Noure" Placeholder) -->
+                <div class="form-group">
+                    <label for="adminName">Your Name</label>
+                    <div class="input-container">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="adminName" name="adminName" class="name-pink-text"  required>
+                    </div>
+                </div>
+
+                <!-- Room Name / Group Name (No Placeholder) -->
+                <div class="form-group">
+                    <label for="roomName">Room Name</label>
+                    <div class="input-container">
+                        <span class="input-icon">🙄</span>
+                        <input type="text" id="roomName" name="roomName" placeholder=" e.g Bored room" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Next →
+                </button>
+            </form>
+
+            <!-- Character Image -->
+            <img src="/images/create.png" class="character-graphic" alt="Let's Play">
+        </div>
+    </div>
+</body>
+</html>

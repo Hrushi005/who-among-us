@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Who Among Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f7f9fc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 50px;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            width: 100%;
+            max-width: 820px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            font-size: 18px;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #eef2ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-right-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #64748b;
+        }
+
+        .moon-icon {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Main Header Title */
+        .header-section {
+            width: 100%;
+            max-width: 820px;
+            padding: 0 20px 24px 20px;
+            box-sizing: border-box;
+        }
+
+        .results-title {
+            font-size: 38px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .results-subtitle {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Results Container */
+        .results-container {
+            width: 100%;
+            max-width: 820px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Question Card */
+        .result-card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 24px 28px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.07);
+            border: 2px solid #eef2ff;
+        }
+
+        .card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            border-bottom: 1.5px solid #f1f5f9;
+            padding-bottom: 16px;
+        }
+
+        .q-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .q-icon-badge {
+            width: 32px;
+            height: 32px;
+            background: #eef2ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #6366f1;
+        }
+
+        .question-text {
+            font-size: 19px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .total-votes-badge {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 900;
+            font-size: 13.5px;
+            padding: 6px 14px;
+            border-radius: 14px;
+        }
+
+        /* Candidate Rows */
+        .candidate-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .candidate-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .candidate-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 170px;
+        }
+
+        .candidate-avatar {
+            width: 34px;
+            height: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .candidate-name {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        /* Progress Bar Middle */
+        .candidate-middle {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 20px;
+        }
+
+        .bar-bg {
+            flex: 1;
+            height: 9px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #818cf8 0%, #ec4899 100%);
+            border-radius: 10px;
+        }
+
+        .vote-count-num {
+            font-size: 15px;
+            font-weight: 900;
+            color: #475569;
+            width: 20px;
+            text-align: right;
+        }
+
+        /* Voted By Right Side */
+        .candidate-right {
+            width: 270px;
+            text-align: right;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .candidate-right strong {
+            color: #334155;
+            font-weight: 800;
+        }
+
+        /* View All Questions Button */
+        .btn-view-all {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 35px auto 0 auto;
+            padding: 14px 32px;
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 30px;
+            color: #334155;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            transition: 0.25s;
+        }
+
+        .btn-view-all:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .candidate-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                background: #f8fafc;
+                padding: 12px;
+                border-radius: 12px;
+            }
+            .candidate-middle {
+                width: 100%;
+                padding: 0;
+            }
+            .candidate-right {
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <a href="/" class="logo-area">
+            <div class="logo-icon">🕵️</div>
+            <span>Who Among Us</span>
+        </a>
+        <div class="nav-right-info">
+            <span>Room: <%= room.roomName %></span>
+            <span class="moon-icon">🌙</span>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <h1 class="results-title">Results</h1>
+        <p class="results-subtitle">Here's how your friends voted!</p>
+    </div>
+
+    <!-- Results Feed Container -->
+    <div class="results-container">
+        <% questions.forEach((qText, qIdx) => {
+            const qVotesMap = (room.votes && room.votes[qIdx]) ? room.votes[qIdx] : {};
+            const qDetailedMap = (room.detailedVotes && room.detailedVotes[qIdx]) ? room.detailedVotes[qIdx] : {};
+
+            let totalQVotes = 0;
+            Object.values(qVotesMap).forEach(cnt => totalQVotes += cnt);
+
+            // Sort candidates by votes descending
+            const sortedFriends = [...room.friends].sort((a, b) => {
+                return (qVotesMap[b] || 0) - (qVotesMap[a] || 0);
+            });
+        %>
+            <div class="result-card">
+                <!-- Card Header -->
+                <div class="card-top-row">
+                    <div class="q-title-box">
+                        <div class="q-icon-badge">👑</div>
+                        <h2 class="question-text"><%= qText %></h2>
+                    </div>
+                    <div class="total-votes-badge"><%= totalQVotes %> votes</div>
+                </div>
+
+                <!-- Candidates Breakdown -->
+                <div class="candidate-rows">
+                    <% sortedFriends.forEach(friendName => {
+                        const vCount = qVotesMap[friendName] || 0;
+                        const pct = totalQVotes > 0 ? (vCount / totalQVotes) * 100 : 0;
+                        const avatarColor = (room.playerAvatars && room.playerAvatars[friendName]) || 'purple';
+
+                        // Voters list for this specific candidate
+                        const votersForThisFriend = qDetailedMap[friendName] || [];
+                    %>
+                        <div class="candidate-row">
+                            <div class="candidate-left">
+                                <img src="/images/<%= avatarColor %>.png" class="candidate-avatar" alt="<%= friendName %>">
+                                <span class="candidate-name"><%= friendName %></span>
+                            </div>
+                            <div class="candidate-middle">
+                                <div class="bar-bg">
+                                    <div class="bar-fill" style="width: <%= pct %>%;"></div>
+                                </div>
+                                <span class="vote-count-num"><%= vCount %></span>
+                            </div>
+                            <div class="candidate-right">
+                                <% if (votersForThisFriend.length > 0) { %>
+                                    Voted by: <strong><%= votersForThisFriend.join(', ') %></strong>
+                                <% } else { %>
+                                    -
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Bottom Action -->
+    <a href="/" class="btn-view-all">🏠 Create New Room & Play Again →</a>
+
+</body>
+</html>

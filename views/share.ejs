@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Room - Who Among Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fb;
+            color: #2d3748;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Pastel Background Blobs */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.65;
+            animation: moveBlob 10s infinite ease-in-out alternate;
+        }
+        .blob1 { width: 420px; height: 420px; background: #fecdd3; top: -80px; left: -80px; }
+        .blob2 { width: 450px; height: 450px; background: #fde68a; bottom: -100px; right: -60px; animation-delay: 2s; }
+
+        @keyframes moveBlob {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-25px) scale(1.08); }
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            z-index: 10;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: #e11d48; transform: translateX(-3px); }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-right { font-size: 20px; cursor: pointer; }
+
+        /* 4 Steps Tracker */
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 15px 10px;
+            max-width: 800px;
+            margin: 5px auto 25px auto;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            color: #a0aec0;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        .step.active {
+            color: #e11d48;
+            border-bottom: 3px solid #f43f5e;
+            padding-bottom: 5px;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #a0aec0;
+        }
+
+        .step.completed .step-number {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #059669;
+        }
+
+        .step.active .step-number {
+            background: #f43f5e;
+            border-color: #f43f5e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.4);
+        }
+
+        /* Main Card Layout */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0 20px 60px 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(244, 63, 94, 0.1);
+            width: 100%;
+            max-width: 760px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 45px;
+        }
+
+        /* Left Side Character Section */
+        .left-character-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-graphic {
+            width: 235px;
+            animation: floatChar 3.5s infinite ease-in-out;
+            filter: drop-shadow(0 14px 22px rgba(225, 29, 72, 0.15));
+        }
+
+        @keyframes floatChar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(3deg); }
+        }
+
+        /* Right Side Text & Controls Section */
+        .right-content-section {
+            flex: 1;
+        }
+
+        .badge-ready {
+            display: inline-block;
+            background: #ffe4e6;
+            color: #e11d48;
+            font-weight: 900;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+        }
+
+        p.subtitle {
+            color: #718096;
+            font-weight: 700;
+            font-size: 15px;
+            margin: 0 0 25px 0;
+            line-height: 1.4;
+        }
+
+        /* Room Info Summary Box */
+        .room-summary {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-summary-item span {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .room-summary-item strong {
+            font-size: 17px;
+            font-weight: 900;
+            color: #1e293b;
+        }
+
+        /* Link Copy Box */
+        label {
+            display: block;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 14.5px;
+        }
+
+        .copy-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .link-input {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #475569;
+            outline: none;
+        }
+
+        .btn-copy {
+            padding: 0 22px;
+            border-radius: 14px;
+            border: none;
+            background: #1e293b;
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 14.5px;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        /* Instagram Share Button */
+        .share-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .btn-instagram {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 15.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(220, 39, 67, 0.35);
+            transition: 0.25s;
+        }
+
+        .btn-instagram:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 24px rgba(220, 39, 67, 0.5);
+        }
+
+        /* Footer Navigation Buttons */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-prev {
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.25s;
+        }
+
+        .btn-prev:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* Animated Red Premium Button */
+        .btn-play {
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #fb7185 100%);
+            background-size: 200% auto;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s ease;
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.4);
+            animation: pulseRed 2.5s infinite;
+        }
+
+        .btn-play:hover {
+            background-position: right center;
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(225, 29, 72, 0.6);
+        }
+
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.55); }
+            70% { box-shadow: 0 0 0 16px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+
+        @media(max-width: 768px) {
+            .card-body {
+                flex-direction: column;
+            }
+            .character-graphic {
+                width: 170px;
+            }
+            .card {
+                padding: 30px 22px;
+            }
+            .card-footer {
+                flex-direction: column-reverse;
+                gap: 12px;
+            }
+            .btn-play, .btn-prev {
+                width: 100%;
+                justify-content: center;
+                box-sizing: border-box;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <a href="/add-questions/<%= roomCode %>" class="back-btn">← Back</a>
+        <div class="logo">🕵️ Who Among Us</div>
+        <div class="nav-right">🌙</div>
+    </div>
+
+    <!-- 4 Steps Tracker -->
+    <div class="steps-container">
+        <div class="step completed">
+            <div class="step-number">✓</div>
+            <span>Create Room</span>
+        </div>
+        <div class="step completed">
+            <div class="step-number">✓</div>
+            <span>Add Friends</span>
+        </div>
+        <div class="step completed">
+            <div class="step-number">✓</div>
+            <span>Add Questions</span>
+        </div>
+        <div class="step active">
+            <div class="step-number">4</div>
+            <span>Share Link</span>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="main-content">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- LEFT SIDE: Red Character Image -->
+                <div class="left-character-section">
+                    <img src="/images/share.png" class="character-graphic" alt="Share & Play Red Character">
+                </div>
+
+                <!-- RIGHT SIDE: Text & Share Controls -->
+                <div class="right-content-section">
+                    <div class="badge-ready">🎉 ROOM IS READY!</div>
+                    <h2>Share & Play!</h2>
+                    <p class="subtitle">Send this secret link to your squad so everyone can join and vote anonymously.</p>
+
+                    <!-- Clean Room Summary -->
+                    <div class="room-summary">
+                        <div class="room-summary-item">
+                            <span>Room Name</span>
+                            <strong><%= roomName %></strong>
+                        </div>
+                        <div class="room-summary-item">
+                            <span>Room Code</span>
+                            <strong style="color: #e11d48;"><%= roomCode %></strong>
+                        </div>
+                        <div class="room-summary-item">
+                            <span>Squad</span>
+                            <strong><%= friendsCount %> Friends</strong>
+                        </div>
+                    </div>
+
+                    <!-- Copy Link Box -->
+                    <label>Room Invite Link</label>
+                    <div class="copy-box">
+                        <input type="text" id="shareLink" class="link-input" readonly>
+                        <button type="button" class="btn-copy" id="copyBtn" onclick="copyRoomLink()">📋 Copy Link</button>
+                    </div>
+
+                    <!-- Instagram Share Button -->
+                    <div class="share-actions">
+                        <button type="button" id="instaBtn" class="btn-instagram" onclick="shareOnInstagram()">
+                            📸 Share on Instagram
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="card-footer">
+                <a href="/add-questions/<%= roomCode %>" class="btn-prev">← Back</a>
+                <a href="/play/<%= roomCode %>" class="btn-play">Start Voting Now 🚀</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roomCode = "<%= roomCode %>";
+        const roomName = "<%= roomName %>";
+        const playUrl = `${window.location.origin}/play/${roomCode}`;
+
+        const shareInput = document.getElementById('shareLink');
+        const copyBtn = document.getElementById('copyBtn');
+        const instaBtn = document.getElementById('instaBtn');
+
+        shareInput.value = playUrl;
+
+        function copyRoomLink() {
+            shareInput.select();
+            shareInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(shareInput.value);
+
+            copyBtn.innerText = "Copied! ✓";
+            copyBtn.style.background = "#10b981";
+
+            setTimeout(() => {
+                copyBtn.innerText = "📋 Copy Link";
+                copyBtn.style.background = "#1e293b";
+            }, 2500);
+        }
+
+        function shareOnInstagram() {
+            const inviteText = `🔥 Join our "${roomName}" room on Who Among Us & vote anonymously! 😜👇\n${playUrl}`;
+            navigator.clipboard.writeText(inviteText);
+
+            instaBtn.innerText = "Link Copied! Opening Instagram... 📸";
+
+            setTimeout(() => {
+                window.open("https://www.instagram.com/direct/inbox/", "_blank");
+                instaBtn.innerText = "📸 Share on Instagram";
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

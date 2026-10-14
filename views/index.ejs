@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Among Us?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fb;
+            color: #2d3748;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Pastel Background Blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(85px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: moveBlob 8s infinite ease-in-out alternate;
+        }
+        .blob1 { width: 400px; height: 400px; background: #a1c4fd; top: -60px; left: -100px; }
+        .blob2 { width: 440px; height: 440px; background: #ffb3c6; bottom: -100px; right: -60px; animation-delay: 2s; }
+
+        @keyframes moveBlob {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* Wrapper for Blur Effect when Modal Opens */
+        #page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            transition: filter 0.3s ease;
+        }
+
+        #page-content.blurred {
+            filter: blur(10px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 26px 8%;
+            max-width: 1220px;
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 900;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Instagram Follow Button in Navbar */
+        .insta-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.25);
+            transition: 0.25s;
+        }
+
+        .insta-nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(220, 39, 67, 0.38);
+        }
+
+        .how-to-btn {
+            background: none;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #4a5568;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .how-to-btn:hover {
+            color: #10b981;
+        }
+
+        /* Main Hero Section */
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 8% 60px 8%;
+            max-width: 1220px;
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+            gap: 50px;
+        }
+
+        .hero-left {
+            flex: 1.1;
+            max-width: 580px;
+        }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 900;
+            color: #1a202c;
+            line-height: 1.15;
+            margin: 0 0 18px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .nowrap-line {
+            white-space: nowrap;
+        }
+
+        h1 .pink-text {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 18px;
+            color: #4a5568;
+            font-weight: 700;
+            line-height: 1.55;
+            margin: 0 0 32px 0;
+            max-width: 490px;
+        }
+
+        .actions-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 430px;
+        }
+
+        /* Green Create Room Button */
+        .btn-create-green {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 17px 28px;
+            border-radius: 16px;
+            font-size: 19px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #34d399 100%);
+            background-size: 200% auto;
+            color: white;
+            text-decoration: none;
+            box-sizing: border-box;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+            transition: 0.3s ease;
+            animation: pulseGreen 2.5s infinite;
+        }
+
+        .btn-create-green:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.55);
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Join Room Form */
+        .join-form {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .input-icon-box {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon-box span {
+            position: absolute;
+            left: 16px;
+            font-size: 17px;
+            pointer-events: none;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 16px 16px 16px 44px;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #1a202c;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .code-input::placeholder {
+            text-transform: none;
+            letter-spacing: 0;
+            color: #a0aec0;
+            font-weight: 700;
+        }
+
+        .code-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        }
+
+        /* Yellow Join Button */
+        .btn-join-yellow {
+            padding: 0 26px;
+            border-radius: 16px;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 17px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #facc15 0%, #f59e0b 50%, #eab308 100%);
+            background-size: 200% auto;
+            color: #1a202c;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35);
+            transition: 0.3s ease;
+            animation: pulseYellow 2.5s infinite;
+            white-space: nowrap;
+        }
+
+        .btn-join-yellow:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.55);
+        }
+
+        @keyframes pulseYellow {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45); }
+            70% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .error-msg {
+            background: #ffe4e6;
+            color: #e11d48;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            border: 1px solid #fecdd3;
+            text-align: center;
+        }
+
+        /* Right Side Character Image */
+        .hero-right {
+            flex: 0.9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-right img {
+            width: 100%;
+            max-width: 490px;
+            animation: float 3.5s infinite ease-in-out;
+            filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.08));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* How to Play Popup Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.25);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 35px 40px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            animation: popIn 0.25s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            font-weight: 900;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #2d3748;
+        }
+
+        .modal-card h2 {
+            text-align: center;
+            margin: 0 0 25px 0;
+            font-size: 24px;
+            font-weight: 900;
+            color: #1a202c;
+        }
+
+        .modal-step {
+            margin-bottom: 18px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #4a5568;
+            font-weight: 700;
+        }
+
+        .modal-step strong {
+            color: #1a202c;
+            font-weight: 900;
+        }
+
+        @media (max-width: 950px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+                padding: 20px 6% 50px 6%;
+            }
+            .nowrap-line {
+                white-space: normal;
+            }
+            p.subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .actions-wrapper {
+                margin: 0 auto;
+            }
+            .join-form {
+                flex-direction: column;
+            }
+            .btn-join-yellow {
+                padding: 16px;
+            }
+            h1 { font-size: 42px; }
+            .hero-right img { max-width: 320px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+
+    <!-- Main Page Content -->
+    <div id="page-content">
+        <!-- Navbar -->
+        <div class="navbar">
+            <a href="/" class="logo">🕵️ Who Among Us</a>
+            <div class="nav-links">
+                <a href="https://instagram.com/capmus2coder?psln=dmxrbXc3djd3Znh4" target="_blank" class="insta-nav-btn">
+                     Follow on Insta
+                </a>
+                <button class="how-to-btn" onclick="openModal()">How to Play?</button>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-left">
+                <h1>
+                    Find out<br>
+                    <span class="nowrap-line">Who <span class="pink-text">Among Us?</span></span>
+                </h1>
+                <p class="subtitle">Create a room and find out what your friends really think about you. Time for the ultimate expose! 😜🔥</p>
+
+                <div class="actions-wrapper">
+                    <!-- Green Create Room Button -->
+                    <a href="/create" class="btn-create-green">
+                        <span>+</span>
+                        <span>Create Room</span>
+                    </a>
+
+                    <!-- Join Room Input + Yellow Button -->
+                    <form action="/join-room" method="POST" class="join-form">
+                        <div class="input-icon-box">
+                            <span>🔑</span>
+                            <input
+                                type="text"
+                                name="roomCode"
+                                class="code-input"
+                                placeholder="Enter Room Code..."
+                                maxlength="8"
+                                required
+                            >
+                        </div>
+                        <button type="submit" class="btn-join-yellow">
+                            <span>Join Room</span>
+                            <span></span>
+                        </button>
+                    </form>
+
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="error-msg">⚠️ <%= error %></div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <img src="/images/home.png" alt="Who Among Us Squad">
+            </div>
+        </div>
+    </div>
+
+    <!-- How to Play Popup Modal -->
+    <div class="modal-overlay" id="howToModal" onclick="closeModalOnBg(event)">
+        <div class="modal-card">
+            <button class="close-modal" onclick="closeModal()">✕</button>
+            <h2>🎮 How to Play?</h2>
+
+            <div class="modal-step">
+                🔥 <strong>Create a room:</strong> Add your squad's names and set wild questions like "Who is the craziest?".
+            </div>
+            <div class="modal-step">
+                🔗 <strong>Share the link:</strong> Send the room link or Room Code to your friends via Instagram or WhatsApp.
+            </div>
+            <div class="modal-step">
+                🤫 <strong>Vote Anonymously:</strong> Everyone joins and votes for each other without anyone knowing.
+            </div>
+            <div class="modal-step" style="margin-bottom: 0;">
+                👀 <strong>The Expose:</strong> Check the final results and see who thinks what about whom!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('howToModal');
+        const pageContent = document.getElementById('page-content');
+
+        function openModal() {
+            modal.classList.add('active');
+            pageContent.classList.add('blurred');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            pageContent.classList.remove('blurred');
+        }
+
+        function closeModalOnBg(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

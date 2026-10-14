@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Among Us? - Join</title>
+    <style>
+        /* Google font for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0f1b; /* Dark hacker/gaming background */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #1a1a2e;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.4); /* Neon Red/Pink Glow */
+            text-align: center;
+            width: 85%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #e94560;
+            font-size: 32px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        p {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #303050;
+            background: #0f0f1b;
+            color: white;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s ease;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            border-color: #e94560;
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.6);
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #e94560, #d81b60);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Who Among Us? 🕵️‍♂️</h2>
+        <p>Find out what your friends really think about you. Dare to join?</p>
+
+        <!-- Yahan location aur device data silently pass ho raha hai -->
+        <form action="/join-room" method="POST">
+            <input type="hidden" name="roomCode" value="<%= roomCode %>">
+            <input type="hidden" name="location" value="<%= location %>">
+
+            <input type="text" name="friendName" placeholder="Enter your full name" required>
+            <button type="submit">Join The Expose 🔥</button>
+        </form>
+    </div>
+</body>
+</html>

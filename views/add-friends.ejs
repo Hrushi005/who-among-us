@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Friends - Who Among Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fb;
+            color: #2d3748;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Pastel Background Blobs */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.65;
+            animation: moveBlob 10s infinite ease-in-out alternate;
+        }
+        .blob1 { width: 400px; height: 400px; background: #a8f0c6; top: -80px; left: -80px; }
+        .blob2 { width: 450px; height: 450px; background: #a1c4fd; bottom: -100px; right: -60px; animation-delay: 2s; }
+
+        @keyframes moveBlob {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-25px) scale(1.08); }
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            z-index: 10;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: #10b981; transform: translateX(-3px); }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-right { font-size: 20px; cursor: pointer; }
+
+        /* 4 Steps Tracker */
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 15px 10px;
+            max-width: 800px;
+            margin: 5px auto 25px auto;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            color: #a0aec0;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        .step.active {
+            color: #10b981;
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 5px;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #a0aec0;
+        }
+
+        .step.completed .step-number {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #059669;
+        }
+
+        .step.active .step-number {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        /* Main Card Layout */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0 20px 60px 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.08);
+            width: 100%;
+            max-width: 720px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .left-section {
+            flex: 1;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a202c;
+            margin: 0 0 6px 0;
+        }
+
+        p.subtitle {
+            color: #718096;
+            font-weight: 700;
+            font-size: 15px;
+            margin: 0 0 25px 0;
+        }
+
+        /* Friend Inputs List */
+        .friends-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 15px;
+        }
+
+        .friends-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .friends-list::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .friend-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .friend-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #4a5568;
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .friend-input {
+            flex: 1;
+            padding: 13px 16px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-size: 15px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            color: #1a202c;
+            background: #f8fafc;
+            transition: 0.25s;
+        }
+
+        .friend-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* Add Friend Button */
+        .add-more-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px dashed #10b981;
+            background: #ecfdf5;
+            color: #059669;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.25s;
+            margin-bottom: 10px;
+        }
+
+        .add-more-btn:hover {
+            background: #d1fae5;
+            transform: translateY(-2px);
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 700;
+            margin: 0 0 25px 0;
+        }
+
+        /* Right Side Character */
+        .right-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-graphic {
+            width: 220px;
+            animation: floatChar 3.5s infinite ease-in-out;
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,0.1));
+        }
+
+        @keyframes floatChar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+
+        /* Footer Navigation Buttons */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-prev {
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.25s;
+        }
+
+        .btn-prev:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* Animated Green Premium Button */
+        .btn-next {
+            padding: 16px 42px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #34d399 100%);
+            background-size: 200% auto;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s ease;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            animation: pulseGreen 2.5s infinite;
+        }
+
+        .btn-next:hover {
+            background-position: right center;
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.6);
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+            70% { box-shadow: 0 0 0 16px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        @media(max-width: 768px) {
+            .card-body {
+                flex-direction: column;
+            }
+            .character-graphic {
+                width: 150px;
+            }
+            .card {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <a href="/create" class="back-btn">← Back</a>
+        <div class="logo">🕵️ Who Among Us</div>
+        <div class="nav-right">🌙</div>
+    </div>
+
+    <!-- 4 Steps Tracker -->
+    <div class="steps-container">
+        <div class="step completed">
+            <div class="step-number">✓</div>
+            <span>Create Room</span>
+        </div>
+        <div class="step active">
+            <div class="step-number">2</div>
+            <span>Add Friends</span>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <span>Add Questions</span>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <span>Share Link</span>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="main-content">
+        <div class="card">
+            <form action="/add-friends" method="POST" id="friendsForm">
+                <!-- Hidden Room Code -->
+                <input type="hidden" name="roomCode" value="<%= roomCode %>">
+
+                <div class="card-body">
+                    <div class="left-section">
+                        <h2>Add Your Friends</h2>
+                        <p class="subtitle">Enter the names of your squad members (max 9).</p>
+
+                        <div class="friends-list" id="friendsList">
+                            <!-- Friend 1 (Admin Name Pre-filled) -->
+                            <div class="friend-row">
+                                <div class="friend-num">1</div>
+                                <input type="text" name="friends[]" class="friend-input" value="<%= adminName %>" required>
+                                <button type="button" class="delete-btn" onclick="removeFriend(this)" title="Remove">🗑️</button>
+                            </div>
+
+                            <!-- Friend 2 -->
+                            <div class="friend-row">
+                                <div class="friend-num">2</div>
+                                <input type="text" name="friends[]" class="friend-input" placeholder="Friend's Name" required>
+                                <button type="button" class="delete-btn" onclick="removeFriend(this)" title="Remove">🗑️</button>
+                            </div>
+
+                            <!-- Friend 3 -->
+                            <div class="friend-row">
+                                <div class="friend-num">3</div>
+                                <input type="text" name="friends[]" class="friend-input" placeholder="Friend's Name" required>
+                                <button type="button" class="delete-btn" onclick="removeFriend(this)" title="Remove">🗑️</button>
+                            </div>
+
+                            <!-- Friend 4 -->
+                            <div class="friend-row">
+                                <div class="friend-num">4</div>
+                                <input type="text" name="friends[]" class="friend-input" placeholder="Friend's Name" required>
+                                <button type="button" class="delete-btn" onclick="removeFriend(this)" title="Remove">🗑️</button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-more-btn" id="addBtn" onclick="addFriend()">
+                            + Add Another Friend
+                        </button>
+                        <p class="helper-text" id="counterText">You can add up to 9 friends (4/9 added).</p>
+                    </div>
+
+                    <!-- Right Side Green Character Image -->
+                    <div class="right-section">
+                        <img src="/images/add.png" class="character-graphic" alt="Team Up Green Character">
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="card-footer">
+                    <a href="/create" class="btn-prev">← Back</a>
+                    <button type="submit" class="btn-next">Next →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const maxFriends = 9;
+        const minFriends = 2;
+        const friendsList = document.getElementById('friendsList');
+        const addBtn = document.getElementById('addBtn');
+        const counterText = document.getElementById('counterText');
+
+        function updateUI() {
+            const rows = friendsList.querySelectorAll('.friend-row');
+            const count = rows.length;
+
+            // Update numbers 1, 2, 3...
+            rows.forEach((row, index) => {
+                row.querySelector('.friend-num').innerText = index + 1;
+            });
+
+            counterText.innerText = `You can add up to 9 friends (${count}/9 added).`;
+
+            // Hide +Add button if 9 reached
+            if (count >= maxFriends) {
+                addBtn.style.display = 'none';
+            } else {
+                addBtn.style.display = 'block';
+            }
+        }
+
+        function addFriend() {
+            const rows = friendsList.querySelectorAll('.friend-row');
+            if (rows.length >= maxFriends) return;
+
+            const newRow = document.createElement('div');
+            newRow.className = 'friend-row';
+            newRow.innerHTML = `
+                <div class="friend-num">${rows.length + 1}</div>
+                <input type="text" name="friends[]" class="friend-input" placeholder="Friend's Name" required>
+                <button type="button" class="delete-btn" onclick="removeFriend(this)" title="Remove">🗑️</button>
+            `;
+            friendsList.appendChild(newRow);
+
+            // Auto-scroll to bottom and focus new input
+            friendsList.scrollTop = friendsList.scrollHeight;
+            newRow.querySelector('input').focus();
+            updateUI();
+        }
+
+        function removeFriend(btn) {
+            const rows = friendsList.querySelectorAll('.friend-row');
+            if (rows.length <= minFriends) {
+                alert("Kam se kam 2 friends hona zaroori hai game khelne ke liye!");
+                return;
+            }
+            btn.parentElement.remove();
+            updateUI();
+        }
+    </script>
+</body>
+</html>
