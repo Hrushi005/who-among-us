@@ -12,6 +12,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// 🛠️ Admin Route to see all active rooms
+app.get('/admin/rooms', async (req, res) => {
+    try {
+        const allRooms = await Room.find({}).sort({ createdAt: -1 });
+        res.json(allRooms);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error fetching rooms");
+    }
+});
+
 // 🔌 MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI || "mongodb://rushikeshsatpute300_db_user:Hrushi12356@ac-u114edz-shard-00-00.9utnd68.mongodb.net:27017,ac-u114edz-shard-00-01.9utnd68.mongodb.net:27017,ac-u114edz-shard-00-02.9utnd68.mongodb.net:27017/who_among_us?ssl=true&replicaSet=atlas-yx0vum-shard-0&authSource=admin&appName=Cluster0";
 
