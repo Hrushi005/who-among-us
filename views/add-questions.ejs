@@ -482,7 +482,7 @@
         function removeQuestion(btn) {
             const rows = questionsList.querySelectorAll('.question-row');
             if (rows.length <= minQuestions) {
-                alert("Kam se kam 3 questions rakhna zaroori hai game ke liye!");
+                alert("Min 3 questions!");
                 return;
             }
             btn.parentElement.remove();

@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 🔌 MongoDB Connection (Apna working password yahan rakhna)
+// 🔌 MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI || "mongodb://rushikeshsatpute300_db_user:Hrushi12356@ac-u114edz-shard-00-00.9utnd68.mongodb.net:27017,ac-u114edz-shard-00-01.9utnd68.mongodb.net:27017,ac-u114edz-shard-00-02.9utnd68.mongodb.net:27017/who_among_us?ssl=true&replicaSet=atlas-yx0vum-shard-0&authSource=admin&appName=Cluster0";
 
 mongoose.connect(MONGO_URI, {
@@ -21,7 +21,7 @@ mongoose.connect(MONGO_URI, {
     .then(() => console.log('✅ MongoDB Atlas successfully connected!'))
     .catch(err => console.error('❌ MongoDB Connection Error:', err.message));
 
-// 📦 Room Schema & Model (Plain Objects for instant EJS compatibility)
+// 📦 Room Schema & Model
 const roomSchema = new mongoose.Schema({
     roomCode: { type: String, required: true, unique: true, uppercase: true },
     roomName: { type: String, default: 'Friend Squad' },
@@ -50,10 +50,7 @@ const DEFAULT_QUESTIONS = [
     "Who cannot keep a secret for more than 5 minutes?",
     "Who acts the most innocent in front of parents but is the wildest?",
     "Who is the funniest person who makes everyone laugh?",
-    "Who will be the first one to get married in our group?",
-    "Who is most likely to become a billionaire (and forget us)?",
-    "Who gives the best relationship advice despite being single?",
-    "Who is the biggest drama queen/king of the group?"
+
 ];
 
 // 🏠 1. Home Page
@@ -69,7 +66,7 @@ app.post('/join-room', async (req, res) => {
         const room = await Room.findOne({ roomCode });
 
         if (!room) {
-            return res.redirect(`/?error=${encodeURIComponent("Room Code '" + roomCode + "' nahi mila! Sahi code check kar bhai.")}`);
+            return res.redirect(`/?error=${encodeURIComponent("Room Code '" + roomCode + "' Not found Enter valid code.")}`);
         }
 
         res.redirect(`/play/${roomCode}`);
@@ -303,7 +300,6 @@ app.post('/submit-votes', async (req, res) => {
         room.markModified('detailedVotes');
 
         await room.save();
-        console.log(`✅ Votes saved for ${voterName} in room ${room.roomCode}`);
         res.redirect(`/results/${room.roomCode}`);
     } catch (err) {
         console.error(err);
